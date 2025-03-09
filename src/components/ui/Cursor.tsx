@@ -14,11 +14,11 @@ const Cursor = ({ className = '' }: Props) => {
   }, []);
 
   const addEventListeners = () => {
-    document.addEventListener('mousemove', onMouseMove);
+    document?.addEventListener('mousemove', onMouseMove);
   };
 
   const removeEventListeners = () => {
-    document.removeEventListener('mousemove', onMouseMove);
+    document?.removeEventListener('mousemove', onMouseMove);
   };
 
   const onMouseMove = (e: MouseEvent) => {

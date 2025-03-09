@@ -1,4 +1,4 @@
-'use client';
+'use client'; // Ensure this component is treated as a Client Component
 import { navbarSection } from '@/lib/content/navbar';
 import { author } from '@/lib/content/portfolio';
 import useWindowWidth from '@/lib/hooks/use-window-width';
@@ -18,7 +18,6 @@ import { useEffect, useState } from 'react';
  * @param {String} [config.id=navbar] - id of navbar
  * @param {Number} [config.offset=100] - offset of navbar in px
  */
-
 const hideNavWhileScrolling = ({
   id = 'navbar',
   offset = 100,
@@ -28,18 +27,28 @@ const hideNavWhileScrolling = ({
   offset?: number;
   when: boolean;
 }) => {
-  const nav = document.getElementById(id);
+  // Ensure this code only runs in the browser
+  if (typeof window === 'undefined') return;
+
+  const nav = window?.document?.getElementById(id);
   if (!nav) return;
 
   let prevScrollPos = window.pageYOffset;
 
-  window.onscroll = () => {
+  const handleScroll = () => {
     if (when) {
       const curScrollPos = window.pageYOffset;
       if (prevScrollPos < curScrollPos) nav.style.top = `-${offset}px`;
       else nav.style.top = '0';
       prevScrollPos = curScrollPos;
     }
+  };
+
+  window.addEventListener('scroll', handleScroll);
+
+  // Cleanup the event listener on unmount
+  return () => {
+    window.removeEventListener('scroll', handleScroll);
   };
 };
 
@@ -80,7 +89,9 @@ const Navbar = () => {
   const ANIMATION_DELAY = windowWidth <= md ? 0 : 0.8;
 
   useEffect(() => {
-    hideNavWhileScrolling({ when: !navbarCollapsed });
+    if (typeof window !== 'undefined') {
+      hideNavWhileScrolling({ when: !navbarCollapsed });
+    }
   }, [navbarCollapsed]);
 
   return (
